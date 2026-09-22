@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET!;
-
 export function auth(
   req: Request,
   res: Response,
@@ -11,7 +9,9 @@ export function auth(
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    return res.sendStatus(401);
+    return res.status(401).json({
+      error: 'Authorization header is required',
+    });
   }
 
   const [scheme, token] = authHeader.split(' ');
@@ -19,6 +19,16 @@ export function auth(
   if (scheme !== 'Bearer' || !token) {
     return res.status(401).json({
       error: 'Invalid authorization header',
+    });
+  }
+
+  const JWT_SECRET = process.env.JWT_SECRET;
+
+  if (!JWT_SECRET) {
+    console.error('JWT_SECRET is not configured');
+
+    return res.status(500).json({
+      error: 'Server configuration error',
     });
   }
 
