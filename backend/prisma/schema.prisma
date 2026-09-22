@@ -3,22 +3,22 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite" // or postgresql
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  tasks     Task[]
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  password      String
+  tasks         Task[]
   refreshTokens RefreshToken[]
 }
 
 model Task {
   id     Int    @id @default(autoincrement())
   title  String
-  status String @default("pending") // "pending" or "done"
+  status String @default("pending")
   userId Int
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
