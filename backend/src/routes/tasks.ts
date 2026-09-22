@@ -1,4 +1,5 @@
 import express from 'express';
+import { Prisma } from '@prisma/client';
 import { auth } from '../middleware/auth';
 import {
   taskSchema,
@@ -21,14 +22,7 @@ router.get('/', async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    const where: {
-      userId: number | undefined;
-      title?: {
-        contains: string;
-        mode: 'insensitive';
-      };
-      status?: string;
-    } = {
+    const where: Prisma.TaskWhereInput = {
       userId: req.userId,
     };
 
